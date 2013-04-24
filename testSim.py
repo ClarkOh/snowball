@@ -29,7 +29,47 @@ def testGetFieldDataList() :
     print fieldDataList
     dataFile.close()
 
-def getRelationship() :
+def getDayVariance(code) :
+    if type(code) != str and type(code) != unicode :
+        print 'invalid code type', type(code)
+        return None
+    #dataPath = u'database\\day\\'
+    dataPath = u'D:\\user\\MyProject_old\\codes\\RapidSnowBall\\database\\day\\'
+    #dataPath = u'D:\\user\\MyProject_old\\codes\\RapidSnowBall\\database\\day\\'
+    fileName = dataPath + code + u'.data'
+    #fileName = u'D:\\user\\MyProject_old\\codes\\RapidSnowBall\\database\\day\\A000020.data'
+    from cxFile import cxFile
+    try :
+        dataFile = cxFile(fileName)
+    except :
+        print 'file open failed :', fileName
+        return None
+
+    lines = dataFile.readlines()
+    if len(lines) == 0 :
+        print 'no data in %s'%(code)
+        return None
+    
+    dataList = []
+    from common import getFieldDataList
+    for line in lines :
+        dataList.append(getFieldDataList(line)[6])
+
+    mean = 0.0
+    variance = 0.0
+
+    for data in dataList :
+        value = int(data)
+        mean += int(value)
+        variance += pow(value)
+
+    mean = mean/len(dataList)
+    variance = variance/len(dataList)
+    print mean, variance
+
+    return [mean, variance]
+
+def getRelationships() :
     return
 
 def testCalculateStochaostic() :
@@ -246,8 +286,10 @@ def testCalculateStochaostic() :
 
 def test() :
     #testSaveStockData()
-    testCalculateStochaostic()
+    #testCalculateStochaostic()
     #testGetFieldDataList()
+    mean, variance = getDayVariance(u'A000020')
+    print mean, variance
 
 def collect_and_show_garbage() :
 	"Show what garbage is present."
