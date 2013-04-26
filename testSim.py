@@ -29,12 +29,36 @@ def testGetFieldDataList() :
     print fieldDataList
     dataFile.close()
 
+def cal_mean_and_variance( dataList ) :
+    from math import pow, log
+    mean = 0.0
+    variance = 0.0
+    num = len(dataList)
+    for data in dataList :
+        if type(data) != int and type(data) != float :
+            print 'invalid type for mean and variance :', type(data)
+            return [] 
+        mean += data
+    mean = mean/num
+
+    for data in dataList :
+        variance += pow((data-mean),2)
+
+    variance = log(variance/num)
+    return [mean, variance]
+
+def test_cal_mean_and_variance( ) :
+    testList = [ 5,2,-7,-10,9,10]
+    result = cal_mean_and_variance(testList)
+    print result
+    assert result == [1.5, 4.053233173979669], 'incorrect result'
+
 def getDayVariance(code) :
     if type(code) != str and type(code) != unicode :
         print 'invalid code type', type(code)
         return None
     #dataPath = u'database\\day\\'
-    dataPath = u'D:\\user\\MyProject_old\\codes\\RapidSnowBall\\database\\day\\'
+    dataPath = u'D:\\user\\clark\\MyWork\\codes\\RapidSnowBall\\database\\day\\'
     #dataPath = u'D:\\user\\MyProject_old\\codes\\RapidSnowBall\\database\\day\\'
     fileName = dataPath + code + u'.data'
     #fileName = u'D:\\user\\MyProject_old\\codes\\RapidSnowBall\\database\\day\\A000020.data'
@@ -52,22 +76,13 @@ def getDayVariance(code) :
     
     dataList = []
     from common import getFieldDataList
-    for line in lines :
-        dataList.append(getFieldDataList(line)[6])
 
-    mean = 0.0
-    variance = 0.0
+    for index in range(1,len(lines)) :
+        dataList.append(int(getFieldDataList(lines[index])[6]))
 
-    for data in dataList :
-        value = int(data)
-        mean += int(value)
-        variance += pow(value)
-
-    mean = mean/len(dataList)
-    variance = variance/len(dataList)
-    print mean, variance
-
-    return [mean, variance]
+    result = cal_mean_and_variance(dataList) 
+    print result
+    return result
 
 def getRelationships() :
     return
@@ -288,8 +303,10 @@ def test() :
     #testSaveStockData()
     #testCalculateStochaostic()
     #testGetFieldDataList()
-    mean, variance = getDayVariance(u'A000020')
-    print mean, variance
+    #result = getDayVariance(u'A000020')
+    #print result
+    #print result[0], result[1]
+    test_cal_mean_and_variance()
 
 def collect_and_show_garbage() :
 	"Show what garbage is present."
